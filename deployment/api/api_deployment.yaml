@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questionlair-api
+  namespace: questionlair-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: questionlair-api
+  template:
+    metadata:
+      labels:
+        app: questionlair-api
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-gyw-xbt
+      containers:
+        - name: api
+          image: haidangnng/questionlair-api:latest
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: appsettings
+              mountPath: /app/appsettings.json
+              subPath: appsettings.json
+      volumes:
+        - name: appsettings
+          configMap:
+            name: api-config

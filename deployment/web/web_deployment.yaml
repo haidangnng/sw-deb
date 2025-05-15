@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questionlair-web
+  namespace: questionlair-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: questionlair-web
+  template:
+    metadata:
+      labels:
+        app: questionlair-web
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-k9c-moa  # Change to your target node
+      containers:
+        - name: blazor
+          image: haidangnng/questionlair-web:latest  # Update with your image
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://+:5000

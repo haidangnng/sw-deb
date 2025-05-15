@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-config
+  namespace: questionlair-be
+data:
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      },
+      "AllowedHosts": "*",
+      "Jwt": {
+        "Key": "oqJn4bQTkvTMCLds+HNQKiwDsX0l1BRrRj8J53SEYGU=",
+        "Issuer": "QuestionLairAPI",
+        "ExpiresInMinutes": 60
+      },
+      "ConnectionStrings": {
+        "DefaultConnection": "Host=postgres.questionlair-db.svc.cluster.local;Port=5432;Database=question_lair_db;Username=user;Password=password"
+      },
+      "Upload": {
+        "MinIOServiceURL": "http://minio.questionlair-db.svc.cluster.local:9000",
+        "AccessKey": "LaHdIj7wGT0PYf4oSteb",
+        "SecretKey": "YGhY6l6gHJpjQj4LEhQMO3VxUmMehCz9jJvAV7vj",
+        "BucketName": "materials",
+        "Region": "us-east-1"
+      }
+    }

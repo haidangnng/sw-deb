@@ -1,0 +1,15 @@
+# metallb-config.yaml
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: questionlair-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.251.160-192.168.251.180 # Update to your IP range
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: questionlair-adv
+  namespace: metallb-system

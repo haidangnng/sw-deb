@@ -1,0 +1,31 @@
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-secret
+  namespace: questionlair-db
+  labels:
+    app: db
+data:
+  POSTGRES_HOST: "postgres.questionlair.svc.cluster.local"
+  POSTGRES_PORT: "5432"
+  POSTGRES_NAME: "question_lair_db"
+  POSTGRES_USER: "user"
+  POSTGRES_PASSWORD: "password"
+---
+
+# https://kubernetes.io/docs/concepts/configuration/configmap/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minio-secret
+  namespace: questionlair-db
+  labels:
+    app: db
+data:
+  MINIO_ENDPOINT: "http://minio.questionlair.svc.cluster.local:9000"
+  MINIO_BUCKET: "uploads"
+  MINIO_ROOT_USER: "minio"
+  MINIO_ROOT_PASSWORD: "minio123"
+---
+

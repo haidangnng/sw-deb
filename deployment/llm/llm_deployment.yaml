@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: questionlair-llm
+  namespace: questionlair-llm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-api
+  template:
+    metadata:
+      labels:
+        app: llm-api
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-2ts-cr1
+      containers:
+        - name: chromadb
+          image: chromadb/chroma:1.0.0
+          ports:
+            - containerPort: 8000
+          env:
+            - name: IS_PERSISTENT
+              value: "TRUE"
+          volumeMounts:
+            - name: chroma-data
+              mountPath: /data
+
+        - name: llm-api
+          image: haidangnng/questionlair-llm:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-secret
+                  key: OPENAI_API_KEY
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Waiting for chromadb..."
+              until curl -s http://localhost:8000/heartbeat; do
+                sleep 1
+              done
+              echo "ChromaDB is up. Starting FastAPI..."
+              uvicorn app.main:app --host 0.0.0.0 --port 8080
+
+      volumes:
+        - name: chroma-data
+          emptyDir: {}
+        - name: tiktoken-cache-volume
+          persistentVolumeClaim:
+            claimName: tiktoken-cache-pvc

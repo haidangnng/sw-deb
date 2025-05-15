@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: questionlair-db
+spec:
+  replicas: 1  # Use 1 replica for stateful storage with hostPath PVs
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: talos-49x-1t6
+      containers:
+        - name: postgres
+          image: 'postgres:14'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: db-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgresdata
+        - name: minio
+          image: 'minio/minio:latest'
+          imagePullPolicy: IfNotPresent
+          args:
+             - server
+             - /var/lib/minio/data/
+             - --console-address
+             - ":9001"
+          ports:
+            - containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: minio-secret
+          volumeMounts:
+            - mountPath: /var/lib/minio/data
+              name: miniodata
+      volumes:
+        - name: postgresdata
+          persistentVolumeClaim:
+            claimName: postgres-volume-claim
+        - name: miniodata
+          persistentVolumeClaim:
+            claimName: minio-volume-claim
