@@ -48,17 +48,19 @@ You can change the namespace to anything, but you have to change them in the dep
 Update the namespace and the node you want to deploy to in the deployment files.
 
 ## Metallb (Load Balancer)
-
 Run `05_metallb.sh`
+
 ## Database (Postgresql, Minio)
 1. Update the `db_config.yaml` file to your postgres and minio secret
 2. Run `06_db-deploy.sh`
+
 ## Backend
 1. Update the `api_config.yaml` file to your postgres connection and minio secret
 2. Run `07_api-deploy.sh`
+
 ## Web
 Run `08_web-deploy.sh`
 
 ## LLM 
-Run `09_llm-deploy.sh`
-
+1. Update `llm_config.yaml` to your `OPEN_API_KEY`
+2. Run `09_llm-deploy.sh`
